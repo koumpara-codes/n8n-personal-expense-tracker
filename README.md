@@ -18,11 +18,5 @@ A personal finance automation that logs expenses directly from Telegram to a for
 - `telegram-expense-bot.json`: The full n8n workflow export.
 - `README.md`: Project documentation.
 
-## ⚙️ Setup
-1. Import the `.json` file into your n8n instance.
-2. Replace the **Telegram API** credentials with your own from [@BotFather](https://t.me/botfather).
-3. Authenticate your **Google Sheets** account.
-4. Set the **Header Row** to `2` in the Google Sheets node options to match the provided template.
-
 ---
 *Created as a beginner automation project to explore API integrations and low-code logic.*
