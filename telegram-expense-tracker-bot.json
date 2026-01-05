@@ -1,0 +1,182 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f937c429-e936-4417-b03e-e50e7eaeca5c",
+      "name": "Telegram Trigger",
+      "webhookId": "aeb9d70e-7589-4f22-9742-ae5cfe6c6880",
+      "credentials": {
+        "telegramApi": {
+          "id": "wFX43d8SpprHBCTp",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the message text from the previous node\nconst text = $node[\"Telegram Trigger\"].json.message.text;\n\n// 2. Split \"Lunch 15.40\" into an array: [\"Lunch\", \"15.40\"]\nconst parts = text.split(' ');\n\n// 3. Create the specific date formats for your Google Sheet\nconst now = new Date();\nconst monthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(now);\nconst fullDate = new Intl.DateTimeFormat('en-US', { \n    weekday: 'long', \n    month: 'long', \n    day: 'numeric' \n}).format(now);\n\n// 4. Output the cleaned data\nreturn {\n  itemType: parts[0],\n  amount: parseFloat(parts[1].replace(',', '.')), // Ensures it's a number, handles commas\n  month: monthName,\n  formattedDay: fullDate\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6752fd0e-0dfb-4675-9d0d-ddca6dad63bc",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17t5iG9pCA8MGhO671WF4xOiHUyeYFFpqAHAb6Q9TD2A",
+          "mode": "list",
+          "cachedResultName": "2026 dump",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17t5iG9pCA8MGhO671WF4xOiHUyeYFFpqAHAb6Q9TD2A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Money tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17t5iG9pCA8MGhO671WF4xOiHUyeYFFpqAHAb6Q9TD2A/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Month": "={{ $json.month }}",
+            "Day": "={{ $json.formattedDay }}",
+            "Type": "={{ $json.itemType }}",
+            "Expense": "={{ $json.amount }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Month",
+              "displayName": "Month",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Expense",
+              "displayName": "Expense",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Income",
+              "displayName": "Income",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "locationDefine": {
+            "values": {
+              "headerRow": 2
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "4f2f5297-d351-4c6c-b7c1-38206dff4f44",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1J23KEGu6wkOhlFW",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "f4cdfdb0-a404-42f1-ab32-2a9957a216de",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f508485db69bf985e68f65832d096ea826f4bdd3b87f8c7bcf4582e5196a11f8"
+  },
+  "id": "64XMIytHNqewsz20",
+  "tags": []
+}
